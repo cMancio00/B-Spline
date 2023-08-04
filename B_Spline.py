@@ -1,13 +1,17 @@
 import numpy as np
 
 class B_Spline:
-    def __init__(self,knots,order):
-        # TODO: Guardare il conteggio degli intervalli e se il vettore dei nodi è valido
+    # TODO: Implementare il builder
+    def __init__(self,knots,order) -> None:
+        # TODO: Eventualmente imporre la condizione che il vettore knots sia crescente
         self.knots = knots
         self.order = order
+        if len(self.knots) - 1 < self.order:
+            raise ValueError("Order is too high for the number of knots")
         self.number_basis_function = len(self.knots) - self.order
         self.t = np.linspace(self.knots[0],self.knots[-1],1000)
         self.basis = list()
+    
         
     def __str__(self) -> str:
         return \
@@ -32,7 +36,6 @@ class B_Spline:
                     base[i][j] = 0
         self.basis.append(base)
 
-
         if self.order != 1:
 
             for r in range(2,self.order+1):
@@ -44,7 +47,7 @@ class B_Spline:
                         * base[i][j] \
                         + (self.knots[i+r] - breakpoint) / (self.knots[i+r] - self.knots[i+1]) \
                         * base[i+1][j]
-
+                #TODO: Controllare se è necessario effettuare una deep copy
                 base = base[:-1,:]
                 self.basis.append(base)
 
