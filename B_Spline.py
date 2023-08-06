@@ -23,6 +23,15 @@ class B_Spline:
         if not self.basis:
             raise AttributeError("B-Spline base has not yet been calculated") 
         return self.basis[-1]
+    
+    def omega(self,breakpoint:float, i:int,r:int) -> float:
+        # TODO: Il controllo if breakpoint < self.knots[i+r-1] (previsto in letteratura),
+        # può comunque generare zero in alcuni casi
+        # del calcolo (1 - omega(breakpoint,i+1,r))
+        if (self.knots[i+r-1] - self.knots[i]) != 0:
+            return (breakpoint - self.knots[i]) / (self.knots[i+r-1] - self.knots[i])
+        else:
+            return 0
   
     def compute_base(self) -> None:
         max_basis_function = len(self.knots) - 1
@@ -43,9 +52,9 @@ class B_Spline:
                 for i in range(np.shape(base)[0] - 1):
                     for j,breakpoint in enumerate(self.t):
                         base[i][j] = \
-                        (breakpoint - self.knots[i]) / (self.knots[i+r-1] - self.knots[i]) \
+                        self.omega(breakpoint,i,r) \
                         * base[i][j] \
-                        + (self.knots[i+r] - breakpoint) / (self.knots[i+r] - self.knots[i+1]) \
+                        + (1 - self.omega(breakpoint,i+1,r)) \
                         * base[i+1][j]
                 #TODO: Controllare se è necessario effettuare una deep copy
                 base = base[:-1,:]
