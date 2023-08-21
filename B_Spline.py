@@ -18,11 +18,27 @@ class B_Spline:
         f"Order: {self.order}\n" + \
         f"Number of Basis functions: {self.number_basis_function}\n" + \
         f"Extended Knot Vector lenght: {len(self.knots)}\n"
+    
+    def get_valid_abscissa(self):
+        for index,value in enumerate(self.t):
+            if(value >= self.knots[self.order - 1]):
+                start = index
+                break
+        for index,value in enumerate(self.t):
+            if(value >= self.knots[self.number_basis_function]):
+                stop = index - 1
+                break
+        return start, stop
    
     def get_base(self) -> np.ndarray:
         if not self.basis:
             raise AttributeError("B-Spline base has not yet been calculated") 
         return self.basis[-1]
+    
+    def get_collocation_matrix(self) -> np.ndarray:
+        collocation_matrix = self.get_base()
+        start,stop = self.get_valid_abscissa()
+        return collocation_matrix[:,start : (stop +1)]
     
     def omega(self,breakpoint:float, i:int,r:int) -> float:
         # TODO: Il controllo if breakpoint < self.knots[i+r-1] (previsto in letteratura),
