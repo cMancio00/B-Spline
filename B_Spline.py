@@ -75,6 +75,7 @@ class B_Spline:
                 #TODO: Controllare se è necessario effettuare una deep copy
                 base = base[:-1,:]
                 self.basis.append(base)
+        return self
 
     
 
