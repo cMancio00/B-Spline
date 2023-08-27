@@ -40,7 +40,7 @@ class Curve:
         plt.plot(self.control_points[0],self.control_points[1],':rx')
         plt.plot(self.curve_points[0],self.curve_points[1])
         plt.grid(True)
-        plt.title(f"B-Splie Curve of order {self.order} and {np.shape(self.control_points)[1]}")
+        plt.title(f"B-Splie Curve of order {self.order} and {np.shape(self.control_points)[1]} control points")
         plt.xlabel(f"{np.shape(self.curve_points)[1]} points plotted")
 
         plt.show()
