@@ -24,7 +24,16 @@ class HB_Spline():
             "stop": self.vectors[-1]["knots"][stop_idx],
             "knots": ((self.domains[-1]["knots"]) * 2) - 1
         }
+        self.update_previus_domain(start_idx,stop_idx)
         self.domains.append(domain)
+
+    def update_previus_domain(self,start_idx,stop_idx) -> None:
+        self.domains[-1].update(
+            {
+            "start_idx":start_idx,
+            "stop_idx":stop_idx
+            }
+        )
 
     def find_closest_range(self,range:tuple) -> tuple[int,int]:
         start_idx = (np.abs(self.vectors[-1]["knots"] - range[0])).argmin()
@@ -80,10 +89,10 @@ def main():
     hb = HB_Spline(mother)
     hb.refine((0.2,0.8))
     hb.refine((0.4,0.5))
-    # print(hb.domains)
-    # print(hb.vectors)
-    hb.plot_level_basis()
-    plt.show()
+    print(hb.domains)
+    print(hb.vectors)
+    # hb.plot_level_basis()
+    # plt.show()
     
 
 if __name__ == "__main__":
