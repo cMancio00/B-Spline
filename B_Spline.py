@@ -1,3 +1,4 @@
+from __future__ import annotations
 import numpy as np
 
 class B_Spline:
@@ -49,7 +50,7 @@ class B_Spline:
         else:
             return 0
   
-    def compute_base(self) -> None:
+    def compute_base(self) -> B_Spline:
         max_basis_function = len(self.knots) - 1
         base = np.empty((max_basis_function,len(self.t)))
 
