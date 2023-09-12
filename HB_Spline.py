@@ -7,10 +7,29 @@ from matplotlib import pyplot as plt
 class HB_Spline():
     def __init__(self,mother:B_Spline) -> None:
         self.mother = mother.compute_base()
-        self.domains = [{"start":mother.knots[0],"stop":mother.knots[-1],"knots":len(mother.knots),"start_idx":0,"stop_idx":len(mother.knots)}]
-        self.vectors = [{"knots":mother.knots,"level":0}]
-        self.level_basis = [{"b_spline":mother,"basis":mother.get_base(),"level":0}]
-        self.marked_basis = list()
+
+        self.domains = [{
+            "start":mother.knots[0],
+            "stop":mother.knots[-1],
+            "knots":len(mother.knots),
+            "start_idx":0,
+            "stop_idx":len(mother.knots)
+            }]
+        
+        self.vectors = [{
+            "knots":mother.knots,
+            "level":0
+            }]
+        
+        self.level_basis = [{
+            "b_spline":mother,
+            "basis":mother.get_base(),
+            "level":0,
+            "marked":np.zeros(
+                mother.number_basis_function,
+                dtype = int
+            )
+            }]
 
     def refine(self,range:tuple):
         self.\
@@ -68,14 +87,18 @@ class HB_Spline():
         level_base = {
             "b_spline":base,
             "basis":base.get_base(),
-            "level":self.vectors[-1]["level"]
+            "level":self.vectors[-1]["level"],
+            # Qui va messo il campo marked
+            "marked":np.zeros(
+                base.number_basis_function,
+                dtype = int
+            )
         }
         self.level_basis.append(level_base)
         return self
 
     def mark_basis(self) -> HB_Spline:
-        marked_basis = list()
-        #Si prende l'indice di inizio e fine rifinitura
+
         level_domain_start = self.domains[-2]["start_idx"]
         level_domain_stop = self.domains[-2]["stop_idx"]
 
@@ -87,11 +110,7 @@ class HB_Spline():
             base_domain_stop = self.level_basis[-2]["b_spline"].domain_range[i]["stop_idx"]
 
             if (base_domain_start >= level_domain_start) and (base_domain_stop <= level_domain_stop):
-                marked_basis.append(1)
-            else:
-                marked_basis.append(0)
-
-        self.marked_basis.append(marked_basis)
+                self.level_basis[-2]["marked"][i] = 1
         return self
 
 
@@ -120,7 +139,8 @@ def main():
     hb.refine((0.1,0.9))
     hb.refine((0.3,0.7))
     hb.refine((0.4,0.6))
-    print(hb.marked_basis)
+    print(hb.level_basis[0]["marked"])
+    print(hb.level_basis[1]["marked"])
 
     # print(hb.domains)
     # print(hb.vectors)
