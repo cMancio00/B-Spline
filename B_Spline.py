@@ -1,5 +1,6 @@
 from __future__ import annotations
 import numpy as np
+from matplotlib import pyplot as plt
 
 class B_Spline:
     # TODO: Implementare il builder
@@ -12,6 +13,7 @@ class B_Spline:
         self.number_basis_function = len(self.knots) - self.order
         self.t = np.linspace(self.knots[0],self.knots[-1],1000)
         self.basis = list()
+        self.domain_range = list()
     
         
     def __str__(self) -> str:
@@ -76,7 +78,34 @@ class B_Spline:
                 #TODO: Controllare se è necessario effettuare una deep copy
                 base = base[:-1,:]
                 self.basis.append(base)
+            self.compute_basis_range()
         return self
+
+    def compute_basis_range(self) -> B_Spline:
+        for i in range(self.number_basis_function):
+            base_range = {
+                "start_idx" : i,
+                "stop_idx" : i + self.order
+            }
+            self.domain_range.append(base_range)
+
+def main():
+    A = [0,0,0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1,1,1]
+    T = np.linspace(0, 1, 10 + 1)
+    base  = B_Spline(T, 3)
+    base.compute_base()
+    print(base.number_basis_function)
+    print(base.domain_range)
+
+
+    for i in range(np.shape(base.get_base() )[0] ):
+        plt.plot(base.t, base.get_base()[i][:])
+    plt.grid(True)
+    plt.show()
+
+
+if __name__ == "__main__":
+    main()
 
     
 

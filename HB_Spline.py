@@ -15,6 +15,7 @@ class HB_Spline():
         self.add_domain(range)
         self.add_vector()
         self.compute_level_base()
+        self.compute_hierarchical_base()
     
     def add_domain(self,range:tuple) -> None:
         start_idx,stop_idx = self.find_closest_range(range)
@@ -64,6 +65,14 @@ class HB_Spline():
             "level":self.vectors[-1]["level"]
         }
         self.level_basis.append(level_base)
+
+    def compute_hierarchical_base(self)->None:
+        self.remove_basis_from_previus_level()
+
+    def remove_basis_from_previus_level()->None:
+        rifine_domain_index = tuple(
+        ) 
+
 
     def plot_level_basis(self) -> None:
         for level in range (len(self.level_basis)):
