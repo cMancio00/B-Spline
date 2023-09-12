@@ -78,7 +78,7 @@ class B_Spline:
                 #TODO: Controllare se è necessario effettuare una deep copy
                 base = base[:-1,:]
                 self.basis.append(base)
-            self.compute_basis_range()
+            
         return self
 
     def compute_basis_range(self) -> B_Spline:
@@ -88,6 +88,7 @@ class B_Spline:
                 "stop_idx" : i + self.order
             }
             self.domain_range.append(base_range)
+        return self
 
 def main():
     A = [0,0,0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1,1,1]
