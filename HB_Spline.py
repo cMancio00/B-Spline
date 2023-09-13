@@ -134,18 +134,21 @@ class HB_Spline():
     def plot_level_basis(self) -> None:
         for level in range (len(self.level_basis)):
             for i in range (np.shape(self.level_basis[level]["basis"])[0]):
-                plt.subplot(len(self.level_basis),1,level+1)
-                plt.title(f"Level {level}")
-                plt.grid(True)
-                plt.plot(
-                    np.linspace(
-                    start= self.mother.t[0],
-                    stop= self.mother.t[-1],
-                    num= self.mother.t.size,
-                    endpoint=True
-                    ),
-                    self.level_basis[level]["basis"][i,:])
+                if self.level_basis[level]["marked"][i] == 0:
+                    plt.subplot(len(self.level_basis) ,1,level + 1)
+                    plt.plot(
+                        np.linspace(
+                        start= self.mother.t[0],
+                        stop= self.mother.t[-1],
+                        num= self.mother.t.size,
+                        endpoint=True
+                        ),
+                        self.level_basis[level]["basis"][i,:])
+                    plt.grid(True)
+        
+        # self.polt_hierarchical_basis()
         plt.suptitle("All basis")
+
 
     def get_hierarchical_basis(self) -> None:
         columns = len(self.mother.t)
@@ -167,10 +170,11 @@ class HB_Spline():
         
         self.hb_basis = hb_basis
 
-            
-
     def polt_hierarchical_basis(self)->None:
-        pass
+        for i in range(np.shape(self.hb_basis )[0] ):
+            plt.plot(self.mother.t, self.hb_basis[i][:])
+        plt.grid(True)
+        plt.title("Hierarchical Basis")
 
 
 def main():
@@ -190,12 +194,9 @@ def main():
     print(hb.domains)
     print(hb.vectors)
     #print(hb.level_basis[0]["b_spline"].domain_range[0]["start_idx"])
-    #hb.plot_level_basis()
-    #plt.show()
-
-    for i in range(np.shape(hb.hb_basis )[0] ):
-        plt.plot(hb.mother.t, hb.hb_basis[i][:])
-        plt.grid(True)
+    hb.plot_level_basis()
+    plt.show()
+    hb.polt_hierarchical_basis()
     plt.show()
     
 
