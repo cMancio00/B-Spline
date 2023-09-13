@@ -35,7 +35,7 @@ class HB_Spline():
         self.\
             add_domain(range).\
             add_vector().\
-            compute_level_base(range).\
+            compute_level_base().\
             mark_basis()
     
     def add_domain(self,range:tuple) -> HB_Spline:
@@ -78,22 +78,20 @@ class HB_Spline():
         self.vectors.append(vector)
         return self
 
-    def mark_out_of_domain_basis(self,marked:np.ndarray,range:tuple)->np.ndarray:
-        #TODO: Da rivedere
-        #start_idx,stop_idx=self.find_closest_range(range,-2)
+    def mark_out_of_domain_basis(self,marked:np.ndarray)->np.ndarray:
+
         start = self.domains[-1]["start"]
         stop = self.domains[-1]["stop"]
-        print(f"{start},{stop}")
-        print(len(marked))
-        for idx,element in enumerate(self.vectors[-1]["knots"]):
-            print(f"{idx}:{element}")
-            # if not(start <= element <= stop):
-            #     marked[idx] = 1
-            print(f"-----{idx}----")
-            print(marked)
+        #len(self.vectors[-1]["knots"])
+
+        for idx in range( self.domains[-1]["knots"] - self.mother.order):
+            
+            if not(start <= self.vectors[-1]["knots"][idx] and stop >= self.vectors[-1]["knots"][idx + self.mother.order]):
+                marked[idx] = 1
+
         return marked
     
-    def compute_level_base(self,range:tuple) -> HB_Spline:
+    def compute_level_base(self) -> HB_Spline:
         base = B_Spline(
             knots=self.vectors[-1]["knots"],
             order = self.mother.order
@@ -108,7 +106,7 @@ class HB_Spline():
             "b_spline":base,
             "basis":base.get_base(),
             "level":self.vectors[-1]["level"],
-            "marked":self.mark_out_of_domain_basis(marked,range)
+            "marked":self.mark_out_of_domain_basis(marked)
         }
         self.level_basis.append(level_base)
         return self
@@ -189,8 +187,8 @@ def main():
     hb.get_hierarchical_basis()
     
 
-    #print(hb.domains)
-    # print(hb.vectors)
+    print(hb.domains)
+    print(hb.vectors)
     #print(hb.level_basis[0]["b_spline"].domain_range[0]["start_idx"])
     #hb.plot_level_basis()
     #plt.show()
