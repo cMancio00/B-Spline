@@ -11,7 +11,7 @@ from time import time
 
 
 class Model:
-    def __init__(self,base:Collocable,data:np.ndarray) -> None:
+    def __init__(self,base:HB_Spline,data:np.ndarray) -> None:
         self.base = base
         self.collocation_matrix = self.base.get_collocation_matrix()
         # self.data = self.put_data_in_proper_dimension(data)
@@ -33,6 +33,7 @@ class Model:
         
 
     def fit(self)->Model:
+        self.collocation_matrix = self.base.get_collocation_matrix()
         self.control_points = self.least_square_qr(self.collocation_matrix,self.data)
         self.curve = self.collocation_matrix @ self.control_points
         return self
@@ -48,6 +49,12 @@ class Model:
         c
         )
         return x
+    
+    def refine(self,range:tuple)->Model:
+        self.base.refine(range)
+        self.collocation_matrix = self.base.get_collocation_matrix()
+        self.fit()
+        return self
 
     def plot(self):
         plt.plot(self.data[:,0],self.data[:,1] , "bo", label="data")
@@ -76,16 +83,26 @@ def main():
     data1 = np.matrix([x, y1]).T
     data2 = np.matrix([x, y2]).T
 
-    Model(
+    a = Model(
         base=hb,
-        data=data1
-    ).fit().plot()
+        data=data2
+    ).fit()
+
+    a.plot()
 
     # Model(
     #     base=base,
     #     data=data2
     # ).fit().plot()
 
+    plt.show()
+
+    a.refine((-2,2))
+    a.plot()
+    plt.show()
+
+    a.refine((-1,1))
+    a.plot()
     plt.show()
 
 
