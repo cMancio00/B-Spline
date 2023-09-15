@@ -4,69 +4,71 @@ from numpy.linalg import qr
 from numpy.linalg import solve
 from  B_Spline import B_Spline
 from HB_Spline import HB_Spline
+from Collocable_Interface import Collocable
 from matplotlib import pyplot as plt
 from time import time
 
 
-def main():
-    start = time()
-    A  = B_Spline(
-        knots=np.linspace(-3,3,10+1),
-        order=3
-    ).compute_base().get_collocation_matrix()
+class Model:
+    def __init__(self,base:Collocable,data:np.ndarray) -> None:
+        self.base = base
+        self.data = data
+        self.collocation_matrix = []
+        self.curve = []
+        self.control_points = []
 
-    A = HB_Spline(
-        B_Spline(np.linspace(-3,3,10+1),3)
-    ).refine((-2,2)).refine((-1,1)).get_hierarchical_basis().hb_basis
+    def fit(self)->Model:
+        self.collocation_matrix = self.base.compute_base().get_collocation_matrix()
+        self.control_points = self.least_square_qr(self.collocation_matrix,self.data)
+        self.curve = self.collocation_matrix @ self.control_points
+        return self
 
-    A = A[:,200:800]
+    def least_square_qr(self,A:np.ndarray,b:np.ndarray)->np.ndarray:
+        A = np.transpose(A)
+        self.collocation_matrix = A
+        Q,R = qr(A,"complete")
+        c = np.transpose(Q) @ b
+        c = c[0:np.shape(R)[1],:]
+        x = solve(
+        R[0:np.shape(R)[1],:],
+        c
+        )
+        return x
 
-    A = np.transpose(A)
-    Q,R = qr(A,"complete")
+    def plot(self):
+        plt.plot(self.data[:,0],self.data[:,1] , "o", label="data")
+        plt.plot(self.curve[:,0],self.curve[:,1],"r-",label="fit")
+        plt.legend(loc="best")
 
-    print("-----A----")
-    print(np.shape(A))
-    print("-----Q----")
-    print(np.shape(Q))
-    print("-----R----")
-    print(np.shape(R))
     
 
+
+
+def main():
+    base  = B_Spline(
+        knots=np.linspace(-3,3,10+1),
+        order=3
+    )
     np.random.seed(1304)
     x = np.linspace(-3, 3, 600)
     y = np.random.normal(3 + np.power(x,2), 1, 600)
     #y = np.random.normal(np.sin(x),1,600)
 
     data = np.matrix([x, y]).T
+    
+    A = HB_Spline(
+        B_Spline(np.linspace(-3,3,10+1),3)
+    ).refine((-2,2)).refine((-1,1)).get_hierarchical_basis().hb_basis
 
-    print("-----Data----")
-    print(np.shape(data))
+    A = A[:,200:800]
 
-    c = np.transpose(Q) @ data
-    c = c[0:np.shape(R)[1],:]
-    print("-----c----")
-    print(np.shape(c))
-    print(c)
+    Model(
+        base=base,
+        data=data
+    ).fit().plot()
 
-    x = solve(
-        R[0:np.shape(R)[1],:],
-        c
-    )
-    print("-----x----")
-    print(np.shape(x))
-    print(x)
-
-    curve = A @ x
-
-
-    print(time()-start)
-
-
-
-    plt.plot(data[:,0],data[:,1] , "o", label="data")
-    plt.plot(curve[:,0],curve[:,1],"r-",label="fit")
-    plt.legend(loc="best")
     plt.show()
+
 
 
 if __name__ == "__main__":
