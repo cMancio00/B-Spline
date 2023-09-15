@@ -31,13 +31,13 @@ class HB_Spline():
             )
             }]
 
-    def refine(self,range:tuple):
+    def refine(self,range:tuple) -> HB_Spline:
         self.\
             add_domain(range).\
             add_vector().\
             compute_level_base().\
             mark_basis()
-    
+        return self
     def add_domain(self,range:tuple) -> HB_Spline:
         start_idx,stop_idx = self.find_closest_range(range)
         domain = \
@@ -150,7 +150,7 @@ class HB_Spline():
         plt.suptitle("All basis")
 
 
-    def get_hierarchical_basis(self) -> None:
+    def get_hierarchical_basis(self) -> HB_Spline:
         columns = len(self.mother.t)
         rows = 0
         for level_base in self.level_basis:
@@ -169,6 +169,7 @@ class HB_Spline():
                     row_used  = row_used + 1
         
         self.hb_basis = hb_basis
+        return self
 
     def polt_hierarchical_basis(self)->None:
         for i in range(np.shape(self.hb_basis )[0] ):

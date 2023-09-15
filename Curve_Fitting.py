@@ -3,14 +3,23 @@ import numpy as np
 from numpy.linalg import qr
 from numpy.linalg import solve
 from  B_Spline import B_Spline
+from HB_Spline import HB_Spline
 from matplotlib import pyplot as plt
+from time import time
 
 
 def main():
+    start = time()
     A  = B_Spline(
-        knots=np.linspace(0,1,10+1),
+        knots=np.linspace(-3,3,10+1),
         order=3
     ).compute_base().get_collocation_matrix()
+
+    A = HB_Spline(
+        B_Spline(np.linspace(-3,3,10+1),3)
+    ).refine((-2,2)).refine((-1,1)).get_hierarchical_basis().hb_basis
+
+    A = A[:,200:800]
 
     A = np.transpose(A)
     Q,R = qr(A,"complete")
@@ -25,8 +34,8 @@ def main():
 
     np.random.seed(1304)
     x = np.linspace(-3, 3, 600)
-    #y = np.random.normal(3 + np.power(x,2), 1, 600)
-    y = np.random.normal(np.sin(x),1,600)
+    y = np.random.normal(3 + np.power(x,2), 1, 600)
+    #y = np.random.normal(np.sin(x),1,600)
 
     data = np.matrix([x, y]).T
 
@@ -50,7 +59,7 @@ def main():
     curve = A @ x
 
 
-
+    print(time()-start)
 
 
 
