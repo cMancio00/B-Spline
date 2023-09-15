@@ -2,12 +2,13 @@ from __future__ import annotations
 import numpy as np
 from B_Spline import B_Spline
 from matplotlib import pyplot as plt
+from Collocable_Interface import Collocable
 
 
-class HB_Spline():
+class HB_Spline(Collocable):
     def __init__(self,mother:B_Spline) -> None:
         self.mother = mother.compute_base().compute_basis_range()
-
+        self.hb_basis = np.empty(shape=(1,1),dtype=float)
         self.domains = [{
             "start":mother.knots[0],
             "stop":mother.knots[-1],
@@ -38,6 +39,7 @@ class HB_Spline():
             compute_level_base().\
             mark_basis()
         return self
+    
     def add_domain(self,range:tuple) -> HB_Spline:
         start_idx,stop_idx = self.find_closest_range(range)
         domain = \
@@ -82,7 +84,6 @@ class HB_Spline():
 
         start = self.domains[-1]["start"]
         stop = self.domains[-1]["stop"]
-        #len(self.vectors[-1]["knots"])
 
         for idx in range( self.domains[-1]["knots"] - self.mother.order):
             
@@ -177,6 +178,10 @@ class HB_Spline():
         plt.grid(True)
         plt.title("Hierarchical Basis")
 
+    def get_collocation_matrix(self)-> np.ndarray:
+        self.get_hierarchical_basis()
+        start,stop = self.mother.get_valid_abscissa()
+        return self.hb_basis[:,start : (stop +1)]
 
 def main():
     T = np.linspace(0, 1, 7 + 1)
