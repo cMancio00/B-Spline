@@ -1,0 +1,68 @@
+\documentclass[../main.tex]{subfiles}
+
+
+\begin{document}
+
+\section{Introduzione}
+L'approssimazione è il processo di costruzione di una curva che coincida il più possibile con dei  dati soggetti ad errore casuale.
+Queste tecniche vengo usate come alternativa all'interpolazione, dove si vuole un'esatta corrispondenza con alcuni punti dati.
+Ci sono delle situazioni in cui è conveniente usare tecniche di approssimazione, ad esempio:
+\begin{enumerate}
+    \item visualizzazione dei dati
+    \item rappresentazione di una funzione dove non sono disponibili dati
+    \item sintetizzare relazioni tra variabili
+\end{enumerate}
+Ci sono vari campi che utilizzano tecniche di approssimazione ad esempio la \textit{modellazione statistica}, \textit{machine learning} e 
+\textit{statistical learning}, ma con obbiettivi diversi.
+Il nostro obbiettivo è quello di fornire un'approssimazione il più possibile precisa di dati generati da funzioni generatrici, soggetti ad errori casuali.
+Non ci interessa quindi l'interpretazione dei risultati ottenuti.
+
+Nel seguito useremo i seguenti dati generati casualmente:
+
+
+\begin{figure}[ht]
+\caption{$y = x + \varepsilon$}
+\includegraphics[width=0.5\textwidth]{Immagini/Introduzione/retta.png}
+\centering
+\label{fig:retta}
+\end{figure}
+
+\begin{figure}[ht]
+\caption{$3 + x^2 + \varepsilon$}
+\includegraphics[width=0.5\textwidth]{Immagini/Introduzione/parabola.png}
+\centering
+\label{fig:parabola}
+\end{figure}
+
+\begin{figure}[ht]
+\caption{$\sin{x} + \varepsilon$}
+\includegraphics[width=0.5\textwidth]{Immagini/Introduzione/seno.png}
+\centering
+\label{fig:seno}
+\end{figure}
+
+\begin{figure}[ht]
+\caption{$\sin{2x} + \sin{3x} + \varepsilon$}
+\includegraphics[width=0.5\textwidth]{Immagini/Introduzione/seno_complesso.png}
+\centering
+\label{fig:seno_complesso}
+\end{figure}
+
+\begin{figure}[ht]
+\caption{$\frac{1}{1+25x^2} + \varepsilon$ ($\varepsilon\sim N(0,0.1) $)}
+\includegraphics[width=0.5\textwidth]{Immagini/Introduzione/runge.png}
+\centering
+\label{fig:runge}
+\end{figure}
+
+\begin{figure}[ht]
+\caption{$\frac{1}{1+25x^2}+ \varepsilon$ ($\varepsilon\sim N(0,1) $)}
+\includegraphics[width=0.5\textwidth]{Immagini/Introduzione/runge_rumoroso.png}
+\centering
+\label{fig:runge_rumoroso}
+\end{figure}
+
+
+
+
+\end{document}

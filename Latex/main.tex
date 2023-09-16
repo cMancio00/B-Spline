@@ -1,0 +1,47 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+
+\title{Progetto di fine corso}
+\author{Christian Mancini}
+\date{\today}
+\usepackage{epigraph}
+\usepackage[italian]{babel}
+
+\usepackage{comment}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage{hyperref}
+\usepackage{subfiles}
+\usepackage{graphicx}
+
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=cyan,
+    pdftitle={Metodi numerici per la grafica},
+    pdfauthor={Christian Mancini}
+    pdfpagemode=FullScreen,
+}
+
+% \theoremstyle{definition}
+% \newtheorem{definition}{Definizione}[chapter]
+% \newtheorem{theorem}{Teorema}[chapter]
+% \newtheorem{lemma}[theorem]{Lemma}
+% \theoremstyle{remark}
+% \newtheorem*{remark}{Nota}
+
+
+\begin{document}
+\maketitle
+
+\subfile{Paragrafi/abstract.tex}
+\subfile{Paragrafi/introduzione.tex}
+\subfile{Paragrafi/B-spline.tex}
+\subfile{Paragrafi/HB-spline.tex}
+\subfile{Paragrafi/approssimazione.tex}
+\subfile{Paragrafi/conclusione.tex}
+
+
+\end{document}
