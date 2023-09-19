@@ -36,7 +36,7 @@ class Model:
         self.collocation_matrix = self.base.get_collocation_matrix()
         self.control_points = self.least_square_qr(self.collocation_matrix,self.data)
         self.curve = self.collocation_matrix @ self.control_points
-        
+        self.MSE()
         return self
 
     def least_square_qr(self,A:np.ndarray,b:np.ndarray)->np.ndarray:
@@ -51,24 +51,39 @@ class Model:
         )
         return x
     
+    def find_bigger_contributors_sse(self)->tuple(int,int):
+        indirect_sorted = np.argsort(self.sse)
+        if indirect_sorted[-1] < indirect_sorted[-2]:         
+            return indirect_sorted[-1], indirect_sorted[-2]
+        return indirect_sorted[-2], indirect_sorted[-1]
+
+        
+    
     #TODO: La rifinitura potrebbe creare matrici singolari
     #Si dovrebbe mappare la rifinitura dal dominio dei dati al dominio del vettore dei nodi?
-    
+
     def refine(self,range:tuple)->Model:
+        start_idx,stop_idx = self.find_bigger_contributors_sse()
         self.base.refine(range)
         self.collocation_matrix = self.base.get_collocation_matrix()
         self.fit()
         return self
 
-    def plot(self):
+    def plot(self)->None:
         plt.plot(self.data[:,0],self.data[:,1] , "bo", label="data")
         plt.plot(self.curve[:,0],self.curve[:,1],"r-",label="fit")
         #plt.plot(self.control_points[:,0],self.control_points[:,1],"x:g",label="control points")
         plt.legend(loc="best")
+        print(f"MSE = {self.mse}")
 
-    
-
-
+    def MSE(self)->np.float32:
+        dimension = np.shape(self.data)[0]
+        self.sse = np.empty(dimension,dtype="float")
+        print(self.curve)
+        for i in range(dimension):
+            self.sse[i] = (self.data[i][0,1] - self.curve[i][0,1])**2
+        self.mse = self.sse.sum() / dimension
+        return self.mse
 
 
 def main():
@@ -84,44 +99,15 @@ def main():
 
     samples = np.shape(base.compute_base().get_collocation_matrix())[1]
 
-    x = np.linspace(0, 10, samples)
-    y= x + np.random.normal(0, 1, samples)
-
-    plt.plot(x,y , "bo", label="data")
-    plt.legend(loc="best")
-    plt.show()
-
-    x = np.linspace(-3, 3, samples)
-    y = np.random.normal(3 + np.power(x,2), 1, samples)
-
-    plt.plot(x,y , "bo", label="data")
-    plt.legend(loc="best")
-    plt.show()
-
-    x = np.linspace(0, 10, samples)
-    y= np.random.normal(np.sin(x),1,samples)
-
-    plt.plot(x,y , "bo", label="data")
-    plt.legend(loc="best")
-    plt.show()
-
-    y = np.sin(x) + np.sin(2 * x) + np.sin(3 * x) + np.random.normal(0, 1, samples)
-
-    plt.plot(x,y , "bo", label="data")
-    plt.legend(loc="best")
-    plt.show()
-
     def runge_function(x):
         return 1 / (1 + 25 * x**2)
+    
     x = np.linspace(-1, 1, samples)
     y_true = runge_function(x)
     y = y_true + np.random.normal(0, 0.1, len(x))
-    plt.plot(x,y , "bo", label="data")
-    plt.legend(loc="best")
-    plt.show()
 
-    y = y_true + np.random.normal(0, 1, len(x))
     plt.plot(x,y , "bo", label="data")
+    plt.plot(x,y_true,"y-",label = "Runge")
     plt.legend(loc="best")
     plt.show()
 
@@ -133,15 +119,17 @@ def main():
     ).fit()
 
     a.plot()
-
+    plt.plot(x,y_true,"y-",label = "Runge")
     plt.show()
 
     a.refine((-0.25,0.25))
     a.plot()
+    plt.plot(x,y_true,"y-",label = "Runge")
     plt.show()
 
     a.refine((-0.1,0.1))
     a.plot()
+    plt.plot(x,y_true,"y-",label = "Runge")
     plt.show()
 
 
