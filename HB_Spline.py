@@ -41,7 +41,9 @@ class HB_Spline(Collocable):
         return self
     
     def add_domain(self,range:tuple) -> HB_Spline:
+
         start_idx,stop_idx = self.find_closest_range(range)
+
         domain = \
         {
             "start": self.vectors[-1]["knots"][start_idx],
@@ -189,17 +191,9 @@ def main():
     hb = HB_Spline(mother)
     hb.refine((0.1,0.9))
     hb.refine((0.3,0.7))
-    #hb.refine((0.4,0.6))
-    #print(hb.level_basis[0]["marked"])
-    #print(hb.level_basis[1]["marked"])
-    #print(hb.level_basis[2]["marked"])
-    #print(hb.level_basis[3]["marked"])
     hb.get_hierarchical_basis()
-    
-
     print(hb.domains)
     print(hb.vectors)
-    #print(hb.level_basis[0]["b_spline"].domain_range[0]["start_idx"])
     hb.plot_level_basis()
     plt.show()
     hb.polt_hierarchical_basis()

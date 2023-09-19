@@ -57,17 +57,36 @@ class Model:
             return indirect_sorted[-1], indirect_sorted[-2]
         return indirect_sorted[-2], indirect_sorted[-1]
 
-        
-    
     #TODO: La rifinitura potrebbe creare matrici singolari
     #Si dovrebbe mappare la rifinitura dal dominio dei dati al dominio del vettore dei nodi?
 
-    def refine(self,range:tuple)->Model:
-        start_idx,stop_idx = self.find_bigger_contributors_sse()
-        self.base.refine(range)
+    def refine(self,range=None)->Model:
+        if range is None:
+            start_idx,stop_idx = self.find_bigger_contributors_sse()         
+            self.base.refine(
+                (
+                    self.curve[start_idx,0],
+                    self.curve[stop_idx,0]
+                )
+            )
+        else:
+            self.base.refine(range)
+
         self.collocation_matrix = self.base.get_collocation_matrix()
         self.fit()
         return self
+    
+    def iterative_refine(self)->Model:
+        try:
+            while True:
+                old_model = self
+                self.refine()
+                if(old_model.mse < self.mse):
+                    self = old_model
+                    return self
+        except np.linalg.LinAlgError:
+            self = old_model
+            return self
 
     def plot(self)->None:
         plt.plot(self.data[:,0],self.data[:,1] , "bo", label="data")
@@ -79,7 +98,6 @@ class Model:
     def MSE(self)->np.float32:
         dimension = np.shape(self.data)[0]
         self.sse = np.empty(dimension,dtype="float")
-        print(self.curve)
         for i in range(dimension):
             self.sse[i] = (self.data[i][0,1] - self.curve[i][0,1])**2
         self.mse = self.sse.sum() / dimension
@@ -113,24 +131,36 @@ def main():
 
     data = np.matrix([x, y]).T
 
-    a = Model(
+    b = Model(
         base=hb,
         data=data
-    ).fit()
-
-    a.plot()
+    )
+    b.fit().iterative_refine()
+    b.plot()
     plt.plot(x,y_true,"y-",label = "Runge")
     plt.show()
 
-    a.refine((-0.25,0.25))
-    a.plot()
-    plt.plot(x,y_true,"y-",label = "Runge")
-    plt.show()
+    # a = Model(
+    #     base=hb,
+    #     data=data
+    # )
+    # a.fit()
 
-    a.refine((-0.1,0.1))
-    a.plot()
-    plt.plot(x,y_true,"y-",label = "Runge")
-    plt.show()
+    # a.plot()
+    # plt.plot(x,y_true,"y-",label = "Runge")
+    # plt.show()
+
+    # a.refine((-0.25,0.25))
+    # a.plot()
+    # plt.plot(x,y_true,"y-",label = "Runge")
+    # plt.show()
+
+    # a.refine((-0.1,0.1))
+    # a.plot()
+    # plt.plot(x,y_true,"y-",label = "Runge")
+    # plt.show()
+
+
 
 
 
