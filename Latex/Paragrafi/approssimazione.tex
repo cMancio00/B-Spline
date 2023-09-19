@@ -2,4 +2,118 @@
 
 \begin{document}
 
+\section{Approssimazione}
+Spesso ci ritroviamo a dover risolvere un sistema di equazioni lineari \textbf{sovradeterminato}, ovvero con più equazioni che incognite, 
+in cui la matrice dei coefficienti ha rango massimo. Ciò che vogliamo risolvere è quindi:
+\begin{align}
+    A\underline{x}&=\underline{b}   &   A&\in\mathbb{R^{\textit{m}\times \textit{n}}} &m\gg n\equiv rank(A)
+\end{align} \label{eq:sovradeterminato}
+
+Questo sistema lineare ammette soluzione se e solo se $\underline{b}\in range(A)$. Dato che $\underline{b}\in\mathbb{R^\textit{m}}$,
+mentre $dim(range(A)) = rank(A) = n < m$, allora non ammette soluzione in senso classico.
+Possiamo però ricercare il vettore $\underline{x}$, in modo che minimizzi il sequente vettore detto \textit{residuo}:
+\begin{equation}
+    \underline{r} = \begin{pmatrix}
+        r_1\\ \vdots \\ r_m
+    \end{pmatrix} = A\underline{x} - \underline{b}
+    \label{eq:residuo}
+\end{equation}
+
+Per fare ciò dobbiamo quindi ricercare \underline{x} che minimizzi la seguente quantità:
+\begin{equation}
+    \sum_{i=1}^{m} = \left\lVert \underline{r} \right\rVert^2_2 = \left\lVert A\underline{x} - \underline{b}\right\rVert^2_2
+    \label{eq:minimi_quadrati}
+\end{equation}
+
+Questa è la soluzione ai \textbf{minimi quadrati}. Facendo ciò, il sistema lineare $A\underline{x} = \underline{b}+\underline{r}$, 
+ammette soluzione.
+
+Un modo efficiente per risolvere questo problema è fattorizzando la matrice $A$. Una fattorizzazione conveniente è 
+la fattorizzazione $QR$.
+
+\begin{theorem}[Fattorizzazione QR]
+    Data la matrice $A$, esistono le matrici:
+    \begin{enumerate}
+        \item $Q \in \mathbb{R^{\textit{m}\times \textit{n}}}$, ortogonale,
+        \item $\hat{R} \in \mathbb{R^{\textit{n}\times \textit{n}}}$, triangolare superiore
+    \end{enumerate}
+    Tali che \begin{equation}
+        A = QR = Q\begin{pmatrix}
+            \hat{R} \\0
+        \end{pmatrix}
+    \end{equation} \label{eq:QR}
+\end{theorem}
+
+\begin{remark}
+    \begin{equation}
+        Q^TA = R = \begin{pmatrix}
+            \hat{R} \\ 0
+        \end{pmatrix}\begin{matrix}
+            (n) \\( m-n)
+        \end{matrix}
+    \end{equation}\label{oss:R}
+\end{remark}
+
+\begin{lemma}
+    \begin{equation}
+        Q^T\underline{b} =\begin{pmatrix}
+            \underline{c}\\ \underline{d}
+        \end{pmatrix}\begin{matrix}
+            (n) \\( m-n)
+        \end{matrix}
+    \end{equation}\label{lm:dati}   
+\end{lemma}
+
+Utilizzando questa fattorizzazione possiamo ridurre il problema:
+\begin{align*}
+    ||A\underline{x} - \underline{b} ||
+    &= ||Q^TA\underline{x} - Q^T\underline{b}|| 
+    \quad\text{(la norma 2 non viene modificata da una matrice ortogonale)}\\
+    &=||\hat{R}\underline{x} - \underline{c}|| + ||\underline{d}||
+    \quad\text{(per l'osservazione \ref*{oss:R} e per il lemma \ref*{lm:dati})}
+\end{align*}
+
+Ci siamo dunque ricondotti a dover risolvere il il seguente sistema lineare:
+\begin{equation}
+    \hat{R}\underline{x} = \underline{c}
+    \label{eq:minimi_ridotti}
+\end{equation}
+Tale sistema ha soluzione in tempo lineare, essendo $\hat{R}$ una matrice triangolare superiore.
+La fattorizzazione $QR$, se si utilizza il metodo di \textit{Householder}, richiede $\approx \frac{2}{3}n^2(3m -n)$ flops.
+La funzione \href{https://numpy.org/doc/stable/reference/generated/numpy.linalg.qr.html}{qr} della libreria \textbf{numpy}, 
+implementa la fattorizzazione con il metodo di \textit{Householder}.
+
+Per quanto riguarda il nostro problema, possiamo utilizzare una forma della matrice $A$ più conveninte.
+Scelta una base qualsiasi è possibile costruirsi la matrice $A$ che assume nomi diversi in base ai campi.
+Ad esempio può essere chiamata matrice \textit{dei coefficienti}, \textit{di costruzione}, \textit{di design}.
+Dato che utilizzeremo le basi delle B-spline, essa prende il nome di \textbf{matrice di collocazione}.
+
+\begin{definition}[matrice di collocazione]
+    La matrice di collocazione A è definita nel seguente modo:
+    \begin{equation}
+        A\equiv \begin{pmatrix}
+            N_{0,k}(x_0) & \cdots & N_{n,k}(x_0) \\
+            \vdots & \ddots & \vdots \\
+            N_{0,k}(x_m) & \cdots & N_{n,k}(x_m)
+        \end{pmatrix}
+    \end{equation}
+    Dove 
+    \begin{itemize}
+        \item $N_{i,k}$ è la i-esima B-spline di ordine k
+        \item $x_0 \cdots x_m$ sono le ascisse di valutazione
+        \item $x_0 = t_{k-1}$, $x_m = t_{n+1}$ e \underline{t} è il \textit{vettore esteso dei nodi}
+        \item $n+1 = dim(\mathbb{S}_{m,\tau})$
+    \end{itemize}
+\end{definition}
+
+I dati sono contenuti nel vettore \underline{b} di dimensione $m \times 2$ (nel caso bidimensionale).
+Il vettore delle incognite \underline{x} equivale ai punti di controllo di de Boor, una volta trovati dobbiamo costruire una curva B-spline
+seguendo la definizione:
+\begin{definition}[Curva B-Spline]
+    \begin{equation}
+        \underline{X}(t) = \sum_{i=0}^{n} \underline{x}_iN_{i,k}(t)
+    \end{equation}\label{eq:b-curve} 
+    con $t \in [t_{k-1},t_{n+1}]$
+\end{definition}
+
 \end{document}

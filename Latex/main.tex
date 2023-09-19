@@ -13,6 +13,8 @@
 \usepackage{hyperref}
 \usepackage{subfiles}
 \usepackage{graphicx}
+\usepackage{mathtools}
+\usepackage{nicematrix}
 
 
 \hypersetup{
@@ -25,12 +27,11 @@
     pdfpagemode=FullScreen,
 }
 
-% \theoremstyle{definition}
-% \newtheorem{definition}{Definizione}[chapter]
-% \newtheorem{theorem}{Teorema}[chapter]
-% \newtheorem{lemma}[theorem]{Lemma}
-% \theoremstyle{remark}
-% \newtheorem*{remark}{Nota}
+\newtheorem{definition}{Definizione}[section]
+\newtheorem{theorem}{Teorema}
+\newtheorem{lemma}[theorem]{Lemma}
+\theoremstyle{remark}
+\newtheorem*{remark}{Osservazione}
 
 
 \begin{document}
@@ -38,9 +39,9 @@
 
 \subfile{Paragrafi/abstract.tex}
 \subfile{Paragrafi/introduzione.tex}
+\subfile{Paragrafi/approssimazione.tex}
 \subfile{Paragrafi/B-spline.tex}
 \subfile{Paragrafi/HB-spline.tex}
-\subfile{Paragrafi/approssimazione.tex}
 \subfile{Paragrafi/conclusione.tex}
 
 
