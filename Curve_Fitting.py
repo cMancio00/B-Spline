@@ -111,7 +111,9 @@ def main():
         order=3
     )
 
-    hb = HB_Spline(base)
+    hb_a = HB_Spline(base)
+    hb_b = HB_Spline(base)
+
     
     np.random.seed(1304)
 
@@ -132,7 +134,7 @@ def main():
     data = np.matrix([x, y]).T
 
     b = Model(
-        base=hb,
+        base=hb_b,
         data=data
     )
     b.fit().iterative_refine()
@@ -140,25 +142,25 @@ def main():
     plt.plot(x,y_true,"y-",label = "Runge")
     plt.show()
 
-    # a = Model(
-    #     base=hb,
-    #     data=data
-    # )
-    # a.fit()
+    a = Model(
+        base=hb_a,
+        data=data
+    )
+    a.fit()
 
-    # a.plot()
-    # plt.plot(x,y_true,"y-",label = "Runge")
-    # plt.show()
+    a.plot()
+    plt.plot(x,y_true,"y-",label = "Runge")
+    plt.show()
 
-    # a.refine((-0.25,0.25))
-    # a.plot()
-    # plt.plot(x,y_true,"y-",label = "Runge")
-    # plt.show()
+    a.refine((-0.25,0.25))
+    a.plot()
+    plt.plot(x,y_true,"y-",label = "Runge")
+    plt.show()
 
-    # a.refine((-0.1,0.1))
-    # a.plot()
-    # plt.plot(x,y_true,"y-",label = "Runge")
-    # plt.show()
+    a.refine((-0.1,0.1))
+    a.plot()
+    plt.plot(x,y_true,"y-",label = "Runge")
+    plt.show()
 
 
 
