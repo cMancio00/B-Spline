@@ -4,7 +4,6 @@ from matplotlib import pyplot as plt
 from Collocable_Interface import Collocable
 
 class B_Spline(Collocable):
-    # TODO: Implementare il builder
     def __init__(self,knots,order) -> None:
         # TODO: Eventualmente imporre la condizione che il vettore knots sia crescente
         self.knots = knots

@@ -4,7 +4,7 @@ from Control_Points import Control_Points
 from matplotlib import pyplot as plt
 from time import time
 
-class Curve:
+class Curve():
 
     def __init__(self,collocation_matrix:B_Spline) -> None:
         self.order = collocation_matrix.order
