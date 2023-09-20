@@ -44,3 +44,16 @@ class Curve:
         plt.xlabel(f"{np.shape(self.curve_points)[1]} points plotted")
 
         plt.show()
+
+def main():
+
+    T = np.linspace(0, 1, 10 + 1)
+    #T = [0,0,0,0.25,0.5,1,1,1]
+    basis = B_Spline(T, 3)
+    curve = Curve(basis)
+    curve.compute_curve().plot_curve()
+
+
+
+if __name__ == "__main__":
+    main()
