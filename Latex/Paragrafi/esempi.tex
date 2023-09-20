@@ -5,7 +5,8 @@
 \section{Esempi}
 Iniziamo a vedere qualche esempio di approssimazione di funzione su dati generati casualmente.
 Gli esempi sono presi dal \href{https://github.com/cMancio00/B-Spline/blob/main/esempi.ipynb}{Notebook Jupyter} della repository.
-Mostriamo inizialmente l'esempio più semplice, ovvero l'approssimazione della retta in figura \ref*{fig:retta}. Cominciamo importando 
+\subsection{Approssimazione di una retta}
+Mostriamo inizialmente l'esempio più semplice, ovvero l'approssimazione della retta in figura \ref{fig:retta}. Cominciamo importando 
 le librerie necessarie e creando una base B-Spline e una base gerarchica.
 
 \begin{lstlisting}[language=Python, caption={Dichiarazione della base}]
@@ -58,10 +59,128 @@ plt.plot(x, x, "y-", label="real")
 plt.legend(loc="best")
 \end{lstlisting}
 Otteniamo l'output come mostrato in figura \ref{fig:retta_fit}
-\begin{figure}
+\begin{figure}[ht]
     \caption{Approssimazione di una retta}
-    \includegraphics{Immagini/esempi/retta.png}
+    \includegraphics[width=0.5\textwidth]{Immagini/esempi/retta.png}
     \centering
     \label{fig:retta_fit}
 \end{figure}
+\subsection{Approssimare una somma di seni}
+Vediamo adesso l'approssimazione di una figura più complessa, ovvero i dati in figura \ref{fig:seno_complesso}.
+Procediamo a dichiarare la base e generare i dati come mostrato \ref{gen_seni}
+
+\begin{lstlisting}[language=Python, caption={Generazione somma di seni},label=gen_seni]
+    base  = B_Spline(
+        knots=np.linspace(0,10,30+1),
+        order=3
+    )
+    
+    hb = HB_Spline(base)
+        
+    samples = np.shape(
+        base.compute_base().get_collocation_matrix()
+    )[1]
+    
+    x = np.linspace(0, 10, samples)
+    y_real = np.sin(x) + np.sin(2 * x) + np.sin(3 * x)
+    y = y_real + np.random.normal(0, 1, samples)
+    
+    data = np.matrix([x, y]).T
+\end{lstlisting}
+Eseguendo il codice mostrato nel listato \ref{fit_seno}, otteniamo il grafico di output mostrato in figura \ref{fig:seno_fit}
+\begin{lstlisting}[language=Python, caption={Fit somma di seni},label=fit_seno]
+    model = Model(
+        base=hb,
+        data=data
+    ).fit()
+    
+    model.plot()
+    plt.plot(x, y_real, "y-", label="real")
+    plt.legend(loc="best")
+\end{lstlisting}
+\begin{figure}[ht]
+    \caption{Approssimazione della somma di seni}
+    \includegraphics[width=0.5\textwidth]{Immagini/esempi/somma_seni.png}
+    \centering
+    \label{fig:seno_fit}
+\end{figure}
+Dalla figura \ref{fig:seno_fit}, possiamo notare che nell'intervallo $(2,4)$ non c'è un buon adattamento. Tuttavia se se proviamo a 
+a raffinare, otteniamo un risultato peggiore. Eseguendo il listato \ref{seno_overfitting} otteniamo la figura \ref{fig:seno_overfitting}
+\begin{lstlisting}[language=Python, caption={Overfitting nella somma di seni},label=seno_overfitting]
+    model.refine((2,4))
+    model.plot()
+    plt.plot(x, y_real, "y-", label="real")
+    plt.legend(loc="best")   
+\end{lstlisting}
+\begin{figure}[ht]
+    \caption{Overfitting in $(2,4)$}
+    \includegraphics[width=0.5\textwidth]{Immagini/esempi/seno_overfit.png}
+    \centering
+    \label{fig:seno_overfitting}
+\end{figure}
+\begin{remark}
+    La curva che è in overfitting in figura \ref{fig:seno_overfitting} ha un \textbf{MSE} più basso rispetto alla curva che non è in 
+    overfitting in figura \ref{fig:seno_fit}, infatti si ha un migliore adattamento ai dati, che però sono rumorosi, e ci si allontana dalla 
+    vera funzione generatrice $sin(2x) + sin(3x)$. I due MSE sono riportati in tabella \ref{tab:MSE}
+
+    \begin{table}[h!]
+        \centering
+         \begin{tabular}{||c c ||} 
+         \hline
+         Overfitting & Non Overfitting \\ [0.5ex] 
+         \hline\hline
+         1.0197649870617647 & 1.027356972130468 \\  [1ex] 
+         \hline
+         \end{tabular}
+         \label{tab:MSE}
+        \end{table}
+\end{remark}
+\subsection{La funzione di Runge}
+Abbiamo scelto di approssiamare la funzione di Runge per vedere se si presenta il fenomeno di Runge.
+\begin{definition}[Fenomeno di Runge]
+    Il fenomeno di Runge è un problema relativo all'interpolazione polinomiale su nodi equispaziati con polinomi di grado elevato. 
+    Esso consiste nell'aumento di ampiezza dell'errore in prossimità degli estremi dell'intervallo.
+\end{definition}
+Nel nostro caso abbiamo nodi equidistanti, ma grado basso. Non ci aspettiamo il verificarsi di tale fenomeno.
+
+Mostraimo adesso i plot delle approssimazioni di tale funzione con rifinitura a mano negli intervalli $(-0.25,0.25)$ e successivamente 
+in $(-0.1,0.1)$
+(Figura \ref{fig:runge_mano})e con rifinutura automatica basandosi su MSE per la scelta degli intervalli da rifinire 
+(Figura \ref{fig:runge_auto}).
+In tabella \ref{tab:runge} sono rappresentati gli MSE per entrmbe le versioni. Con il metodo manuale si ottiene un MSE minore 
+e un maggior adattamento visivo alla vera curva.
+\begin{figure}[h!]
+    \caption{Approssimazione automatica}
+    \includegraphics[width=0.75\textwidth]{Immagini/esempi/runge_auto.png}
+    \centering
+    \label{fig:runge_auto}
+\end{figure}
+\begin{figure}[h!]
+    \caption{Approssimazione manuale}
+    \includegraphics[width=0.75\textwidth]{Immagini/esempi/runge_mano.png}
+    \centering
+    \label{fig:runge_mano}
+\end{figure}
+
+
+\begin{table}[h!]
+    \centering
+     \begin{tabular}{||c c ||} 
+     \hline
+     Automatico & Manuale \\ [0.5ex] 
+     \hline\hline
+     0.010646661450860125 & 0.00981932028930905 \\  [1ex] 
+     \hline
+     \end{tabular}
+     \label{tab:runge}
+     \caption{MSE per l'approssimazione della funzione di Runge}
+    \end{table}
+
+
+
+
+
+
+
+
 \end{document}

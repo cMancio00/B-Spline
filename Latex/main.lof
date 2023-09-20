@@ -7,3 +7,7 @@
 \contentsline {figure}{\numberline {5}{\ignorespaces $\frac {1}{1+25x^2} + \varepsilon $ ($\varepsilon \sim N(0,0.1) $)}}{4}{figure.5}%
 \contentsline {figure}{\numberline {6}{\ignorespaces $\frac {1}{1+25x^2}+ \varepsilon $ ($\varepsilon \sim N(0,1) $)}}{4}{figure.6}%
 \contentsline {figure}{\numberline {7}{\ignorespaces Approssimazione di una retta}}{7}{figure.7}%
+\contentsline {figure}{\numberline {8}{\ignorespaces Approssimazione della somma di seni}}{8}{figure.8}%
+\contentsline {figure}{\numberline {9}{\ignorespaces Overfitting in $(2,4)$}}{8}{figure.9}%
+\contentsline {figure}{\numberline {10}{\ignorespaces Approssimazione automatica}}{9}{figure.10}%
+\contentsline {figure}{\numberline {11}{\ignorespaces Approssimazione manuale}}{10}{figure.11}%
