@@ -4,18 +4,22 @@ from matplotlib import pyplot as plt
 from Collocable_Interface import Collocable
 
 class B_Spline(Collocable):
-    def __init__(self,knots,order) -> None:
-        # TODO: Eventualmente imporre la condizione che il vettore knots sia crescente
+    def __init__(self,knots:np.ndarray,order:int) -> None:
         self.knots = knots
         self.order = order
         if len(self.knots) - 1 < self.order:
             raise ValueError("Order is too high for the number of knots")
-        self.number_basis_function = len(self.knots) - self.order
-        self.t = np.linspace(self.knots[0],self.knots[-1],1000)
+        self.number_basis_function = self.calculate_number_of_basis_functions()
+        self.t = self.generate_evaluetion_vector()
         self.basis = list()
         self.domain_range = list()
     
-        
+    def calculate_number_of_basis_functions(self)->int:
+        return len(self.knots) - self.order
+    
+    def generate_evaluetion_vector(self,granularity = 1000)-> np.ndarray:
+        return np.linspace(self.knots[0],self.knots[-1],granularity)
+
     def __str__(self) -> str:
         return \
         f"Order: {self.order}\n" + \
@@ -90,6 +94,18 @@ class B_Spline(Collocable):
             self.domain_range.append(base_range)
         return self
 
+    def insert_knot(self,knot:float)-> B_Spline:
+        if not (self.knots[0] <= knot <= self.knots[-1]):
+            raise AttributeError(f"knot must be between {self.knots[0]} and {self.knots[-1]}, got {knot} instead.")
+        self.knots = np.append(self.knots,knot)
+        self.knots.sort()
+        self.basis.clear()
+        self.domain_range.clear()
+        self.number_basis_function = self.calculate_number_of_basis_functions()
+        self.t = self.generate_evaluetion_vector()
+        self.compute_base()
+        return self
+
 def main():
     A = [0,0,0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1,1,1]
     T = np.linspace(0, 1, 10 + 1)
@@ -103,6 +119,7 @@ def main():
         plt.plot(base.t, base.get_base()[i][:])
     plt.grid(True)
     plt.show()
+
 
 
 if __name__ == "__main__":

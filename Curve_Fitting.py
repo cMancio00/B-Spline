@@ -11,7 +11,7 @@ from time import time
 
 
 class Model:
-    def __init__(self,base:HB_Spline,data:np.ndarray) -> None:
+    def __init__(self,base:Collocable,data:np.ndarray) -> None:
         self.base = base
         self.collocation_matrix = self.base.get_collocation_matrix()
         # self.data = self.put_data_in_proper_dimension(data)
@@ -62,13 +62,20 @@ class Model:
 
     def refine(self,range=None)->Model:
         if range is None:
-            start_idx,stop_idx = self.find_bigger_contributors_sse()         
-            self.base.refine(
-                (
-                    self.curve[start_idx,0],
-                    self.curve[stop_idx,0]
+            if(isinstance(self.base, B_Spline)):
+                knot_id = np.argsort(self.sse)[-1]
+                #print(knot_id)
+                self.base.insert_knot(
+                    self.curve[knot_id,0]
                 )
-            )
+            else:
+                start_idx,stop_idx = self.find_bigger_contributors_sse()         
+                self.base.refine(
+                    (
+                        self.curve[start_idx,0],
+                        self.curve[stop_idx,0]
+                    )
+                )
         else:
             self.base.refine(range)
 
@@ -93,7 +100,7 @@ class Model:
         plt.plot(self.curve[:,0],self.curve[:,1],"r-",label="fit")
         #plt.plot(self.control_points[:,0],self.control_points[:,1],"x:g",label="control points")
         plt.legend(loc="best")
-        print(f"MSE = {self.mse}")
+        print("MSE:"+"{:e}".format(self.mse))
 
     def MSE(self)->np.float32:
         dimension = np.shape(self.data)[0]
@@ -125,42 +132,70 @@ def main():
     x = np.linspace(-1, 1, samples)
     y_true = runge_function(x)
     y = y_true + np.random.normal(0, 0.1, len(x))
-
-    plt.plot(x,y , "bo", label="data")
-    plt.plot(x,y_true,"y-",label = "Runge")
-    plt.legend(loc="best")
-    plt.show()
-
     data = np.matrix([x, y]).T
 
-    b = Model(
-        base=hb_b,
+    # plt.plot(x,y , "bo", label="data")
+    # plt.plot(x,y_true,"y-",label = "Runge")
+    # plt.legend(loc="best")
+    # plt.show()
+
+
+    base  = B_Spline(
+        knots= [-1,-1,-1,-0.75,-0.5,-0.25,0,0.25,0.5,0.75,1,1,1],
+        order=3
+    )
+
+    samples = np.shape(base.compute_base().get_collocation_matrix())[1]
+
+    x = np.linspace(-1, 1, samples)
+    y_true = runge_function(x)
+    y = y_true + np.random.normal(0, 0.1, len(x))
+    data = np.matrix([x, y]).T
+
+    c = Model(
+        base=base,
         data=data
     )
-    b.fit().iterative_refine()
-    b.plot()
+
+    c.fit()
+    c.plot()
     plt.plot(x,y_true,"y-",label = "Runge")
     plt.show()
 
-    a = Model(
-        base=hb_a,
-        data=data
-    )
-    a.fit()
-
-    a.plot()
+    c.iterative_refine()
+    c.plot()
     plt.plot(x,y_true,"y-",label = "Runge")
     plt.show()
+    print(c.base.knots)
 
-    a.refine((-0.25,0.25))
-    a.plot()
-    plt.plot(x,y_true,"y-",label = "Runge")
-    plt.show()
+    # b = Model(
+    #     base=hb_b,
+    #     data=data
+    # )
+    # b.fit().iterative_refine()
+    # b.plot()
+    # plt.plot(x,y_true,"y-",label = "Runge")
+    # plt.show()
 
-    a.refine((-0.1,0.1))
-    a.plot()
-    plt.plot(x,y_true,"y-",label = "Runge")
-    plt.show()
+    # a = Model(
+    #     base=hb_a,
+    #     data=data
+    # )
+    # a.fit()
+
+    # a.plot()
+    # plt.plot(x,y_true,"y-",label = "Runge")
+    # plt.show()
+
+    # a.refine((-0.25,0.25))
+    # a.plot()
+    # plt.plot(x,y_true,"y-",label = "Runge")
+    # plt.show()
+
+    # a.refine((-0.1,0.1))
+    # a.plot()
+    # plt.plot(x,y_true,"y-",label = "Runge")
+    # plt.show()
 
 
 
