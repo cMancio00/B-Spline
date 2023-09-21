@@ -7,4 +7,7 @@
 *fdb_latexmk
 *toc
 *.out
+*.lol
+*.lot
+*.lof
 /.vscode
