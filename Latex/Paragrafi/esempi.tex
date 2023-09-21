@@ -121,12 +121,15 @@ figura a destra in tabella \ref{tab:seno_fit}
 \end{table}
 
 \begin{remark}
-    La curva che è in overfitting in figura \ref{fig:seno_overfitting} ha un \textbf{MSE} più basso rispetto alla curva che non è in 
-    overfitting in figura \ref{fig:seno_fit}, infatti si ha un migliore adattamento ai dati, che però sono rumorosi, e ci si allontana dalla 
-    vera funzione generatrice $sin(2x) + sin(3x)$. I due MSE sono riportati in tabella \ref{tab:MSE}.
+    La curva che è in overfitting  figura a sinistra della tabella \ref{tab:seno_fit} ha un \textbf{MSE} più basso rispetto 
+    alla curva che non è in overfitting ,visibile nella figura a destra della tabella \ref{tab:seno_fit}, 
+    infatti si ha un migliore adattamento ai dati, 
+    che però sono rumorosi, e ci si allontana dalla vera funzione generatrice $sin(2x) + sin(3x)$. 
+    I due MSE sono riportati in tabella \ref{tab:seno_mse}.
 
     \begin{table}[h!]
         \centering
+        \caption{MSE per la funzione $sin(2x) + sin(3x)$, tab \ref{tab:seno_fit}}\label{tab:seno_mse}
          \begin{tabular}{||c c ||} 
          \hline
          Overfitting & Non Overfitting \\ [0.5ex] 
@@ -134,7 +137,6 @@ figura a destra in tabella \ref{tab:seno_fit}
          1.0197649870617647 & 1.027356972130468 \\  [1ex] 
          \hline
          \end{tabular}
-         \label{tab:MSE}
         \end{table}
 \end{remark}
 
@@ -163,6 +165,7 @@ e un maggior adattamento visivo alla vera curva.
 
 \begin{table}[h!]
     \centering
+    \caption{MSE per l'approssimazione della funzione di Runge}\label{tab:runge_mse}
      \begin{tabular}{||c c ||} 
      \hline
      Automatico & Manuale \\ [0.5ex] 
@@ -170,9 +173,6 @@ e un maggior adattamento visivo alla vera curva.
      0.010646661450860125 & 0.00981932028930905 \\  [1ex] 
      \hline
      \end{tabular}
-     \label{tab:runge_mse}
-     \caption{MSE per l'approssimazione della funzione di Runge}
     \end{table}
-
 
 \end{document}

@@ -3,5 +3,6 @@
 \contentsline {table}{\numberline {1}{\ignorespaces Dati generati.\relax }}{2}{table.caption.1}%
 \contentsline {table}{\numberline {2}{\ignorespaces Funzioni generatrici utilizzate: $y = x + \varepsilon $, $\sin {2x} + \sin {3x} + \varepsilon $, $\frac {1}{1+25x^2} + \varepsilon $ ($\varepsilon \sim N(0,0.1) $)\relax }}{2}{table.caption.1}%
 \contentsline {table}{\numberline {3}{\ignorespaces Fit della funzione $sin(2x) + sin(3x) + \varepsilon $. Overfitting nella figura a destra in $(2,4)$.\relax }}{7}{table.caption.3}%
-\contentsline {table}{\numberline {4}{\ignorespaces Rifinitura automatica(sinistra). Rifinitura manuale(destra)\relax }}{8}{table.caption.5}%
-\contentsline {table}{\numberline {5}{\ignorespaces MSE per l'approssimazione della funzione di Runge\relax }}{8}{table.caption.6}%
+\contentsline {table}{\numberline {4}{\ignorespaces MSE per la funzione $sin(2x) + sin(3x)$, tab \ref {tab:seno_fit}\relax }}{7}{table.caption.4}%
+\contentsline {table}{\numberline {5}{\ignorespaces Rifinitura automatica(sinistra). Rifinitura manuale(destra)\relax }}{8}{table.caption.5}%
+\contentsline {table}{\numberline {6}{\ignorespaces MSE per l'approssimazione della funzione di Runge\relax }}{8}{table.caption.6}%
