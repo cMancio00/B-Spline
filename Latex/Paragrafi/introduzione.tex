@@ -16,49 +16,19 @@ Ci sono vari campi che utilizzano tecniche di approssimazione ad esempio la \tex
 \textit{statistical learning}, ma con obbiettivi diversi.
 Il nostro obbiettivo è quello di fornire un'approssimazione il più possibile precisa di dati generati da funzioni generatrici, soggetti ad errori casuali.
 Non ci interessa quindi l'interpretazione dei risultati ottenuti.
-Nel seguito useremo i dati generati casualmente mostrati in figura \ref{fig:retta}, figura \ref{fig:seno_complesso} e 
-figura \ref{fig:runge}.
+Nel seguito useremo i dati generati casualmente mostrati in tabella \ref{tab:Dati}.
 
-\begin{figure}[ht]
-\caption{$y = x + \varepsilon$}
-\includegraphics[width=0.5\textwidth]{Immagini/Introduzione/retta.png}
-\centering
-\label{fig:retta}
-\end{figure}
+\begin{table}
+    \centering
+    \caption{Dati generati.\label{tab:Dati}}
+        \begin{tabular}{ccc}
+             \includegraphics[width=0.45\linewidth]{Immagini/Introduzione/retta.png}
+            & \includegraphics[width=0.45\linewidth]{Immagini/Introduzione/seno_complesso.png}\\[-4pt]
+            \includegraphics[width=0.45\linewidth]{Immagini/Introduzione/runge.png}
+            &\includegraphics[width=0.45\linewidth]{Immagini/blank.png}\\[-4pt]
+        \end{tabular}%
+        \caption{Funzioni generatrici utilizzate: $y = x + \varepsilon$,  $\sin{2x} + \sin{3x} + \varepsilon$,  $\frac{1}{1+25x^2} + \varepsilon$ ($\varepsilon\sim N(0,0.1) $)}
+\end{table}
 
-\begin{figure}[ht]
-\caption{$3 + x^2 + \varepsilon$}
-\includegraphics[width=0.5\textwidth]{Immagini/Introduzione/parabola.png}
-\centering
-\label{fig:parabola}
-\end{figure}
-
-\begin{figure}[ht]
-\caption{$\sin{x} + \varepsilon$}
-\includegraphics[width=0.5\textwidth]{Immagini/Introduzione/seno.png}
-\centering
-\label{fig:seno}
-\end{figure}
-
-\begin{figure}[ht]
-\caption{$\sin{2x} + \sin{3x} + \varepsilon$}
-\includegraphics[width=0.5\textwidth]{Immagini/Introduzione/seno_complesso.png}
-\centering
-\label{fig:seno_complesso}
-\end{figure}
-
-\begin{figure}[ht]
-\caption{$\frac{1}{1+25x^2} + \varepsilon$ ($\varepsilon\sim N(0,0.1) $)}
-\includegraphics[width=0.5\textwidth]{Immagini/Introduzione/runge.png}
-\centering
-\label{fig:runge}
-\end{figure}
-
-\begin{figure}[ht]
-\caption{$\frac{1}{1+25x^2}+ \varepsilon$ ($\varepsilon\sim N(0,1) $)}
-\includegraphics[width=0.5\textwidth]{Immagini/Introduzione/runge_rumoroso.png}
-\centering
-\label{fig:runge_rumoroso}
-\end{figure}
 
 \end{document}

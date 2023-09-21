@@ -1,13 +1,3 @@
 \babel@toc {italian}{}\relax 
 \babel@toc {italian}{}\relax 
-\contentsline {figure}{\numberline {1}{\ignorespaces $y = x + \varepsilon $}}{2}{figure.1}%
-\contentsline {figure}{\numberline {2}{\ignorespaces $3 + x^2 + \varepsilon $}}{2}{figure.2}%
-\contentsline {figure}{\numberline {3}{\ignorespaces $\sin {x} + \varepsilon $}}{3}{figure.3}%
-\contentsline {figure}{\numberline {4}{\ignorespaces $\sin {2x} + \sin {3x} + \varepsilon $}}{3}{figure.4}%
-\contentsline {figure}{\numberline {5}{\ignorespaces $\frac {1}{1+25x^2} + \varepsilon $ ($\varepsilon \sim N(0,0.1) $)}}{4}{figure.5}%
-\contentsline {figure}{\numberline {6}{\ignorespaces $\frac {1}{1+25x^2}+ \varepsilon $ ($\varepsilon \sim N(0,1) $)}}{4}{figure.6}%
-\contentsline {figure}{\numberline {7}{\ignorespaces Approssimazione di una retta}}{7}{figure.7}%
-\contentsline {figure}{\numberline {8}{\ignorespaces Approssimazione della somma di seni}}{8}{figure.8}%
-\contentsline {figure}{\numberline {9}{\ignorespaces Overfitting in $(2,4)$}}{8}{figure.9}%
-\contentsline {figure}{\numberline {10}{\ignorespaces Approssimazione automatica}}{9}{figure.10}%
-\contentsline {figure}{\numberline {11}{\ignorespaces Approssimazione manuale}}{10}{figure.11}%
+\contentsline {figure}{\numberline {1}{\ignorespaces Approssimazione di una retta\relax }}{6}{figure.caption.2}%

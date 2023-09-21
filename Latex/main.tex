@@ -15,6 +15,9 @@
 \usepackage{graphicx}
 \usepackage{mathtools}
 \usepackage{listings}
+\usepackage{subcaption}
+\usepackage{array}
+
 
 
 
@@ -35,6 +38,16 @@
 \theoremstyle{remark}
 \newtheorem*{remark}{Osservazione}
 
+\lstset{
+language=Python,
+basicstyle=\small\sffamily,
+numbers=left,
+numberstyle=\tiny,
+frame=tb,
+columns=fullflexible,
+showstringspaces=false
+}
+
 
 
 \begin{document}
@@ -49,6 +62,8 @@
 \subfile{Paragrafi/conclusione.tex}
 \clearpage
 \listoffigures
+\listoftables
+\lstlistoflistings
 
 
 \end{document}

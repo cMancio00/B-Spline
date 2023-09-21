@@ -6,7 +6,7 @@
 Iniziamo a vedere qualche esempio di approssimazione di funzione su dati generati casualmente.
 Gli esempi sono presi dal \href{https://github.com/cMancio00/B-Spline/blob/main/esempi.ipynb}{Notebook Jupyter} della repository.
 \subsection{Approssimazione di una retta}
-Mostriamo inizialmente l'esempio più semplice, ovvero l'approssimazione della retta in figura \ref{fig:retta}. Cominciamo importando 
+Mostriamo inizialmente l'esempio più semplice, ovvero l'approssimazione di una retta. Cominciamo importando 
 le librerie necessarie e creando una base B-Spline e una base gerarchica.
 
 \begin{lstlisting}[language=Python, caption={Dichiarazione della base}]
@@ -66,8 +66,8 @@ Otteniamo l'output come mostrato in figura \ref{fig:retta_fit}
     \label{fig:retta_fit}
 \end{figure}
 \subsection{Approssimare una somma di seni}
-Vediamo adesso l'approssimazione di una figura più complessa, ovvero i dati in figura \ref{fig:seno_complesso}.
-Procediamo a dichiarare la base e generare i dati come mostrato \ref{gen_seni}
+Vediamo adesso l'approssimazione di una figura più complessa.
+Procediamo a dichiarare la base e generare i dati come mostrato nel listato \ref{gen_seni}.
 
 \begin{lstlisting}[language=Python, caption={Generazione somma di seni},label=gen_seni]
     base  = B_Spline(
@@ -87,7 +87,8 @@ Procediamo a dichiarare la base e generare i dati come mostrato \ref{gen_seni}
     
     data = np.matrix([x, y]).T
 \end{lstlisting}
-Eseguendo il codice mostrato nel listato \ref{fit_seno}, otteniamo il grafico di output mostrato in figura \ref{fig:seno_fit}
+Eseguendo il codice mostrato nel listato \ref{fit_seno}, otteniamo il grafico di output mostrato nella figura a sinistra 
+della tabella \ref{tab:seno_fit}.
 \begin{lstlisting}[language=Python, caption={Fit somma di seni},label=fit_seno]
     model = Model(
         base=hb,
@@ -98,30 +99,31 @@ Eseguendo il codice mostrato nel listato \ref{fit_seno}, otteniamo il grafico di
     plt.plot(x, y_real, "y-", label="real")
     plt.legend(loc="best")
 \end{lstlisting}
-\begin{figure}[ht]
-    \caption{Approssimazione della somma di seni}
-    \includegraphics[width=0.5\textwidth]{Immagini/esempi/somma_seni.png}
-    \centering
-    \label{fig:seno_fit}
-\end{figure}
-Dalla figura \ref{fig:seno_fit}, possiamo notare che nell'intervallo $(2,4)$ non c'è un buon adattamento. Tuttavia se se proviamo a 
-a raffinare, otteniamo un risultato peggiore. Eseguendo il listato \ref{seno_overfitting} otteniamo la figura \ref{fig:seno_overfitting}
+
+Dalla figura a sinistra in tabella \ref{tab:seno_fit}, possiamo notare che nell'intervallo $(2,4)$ non c'è un buon adattamento. Tuttavia se proviamo a 
+a raffinare, otteniamo un risultato peggiore. Eseguendo il listato \ref{seno_overfitting} otteniamo la 
+figura a destra in tabella \ref{tab:seno_fit}
+
 \begin{lstlisting}[language=Python, caption={Overfitting nella somma di seni},label=seno_overfitting]
     model.refine((2,4))
     model.plot()
     plt.plot(x, y_real, "y-", label="real")
     plt.legend(loc="best")   
 \end{lstlisting}
-\begin{figure}[ht]
-    \caption{Overfitting in $(2,4)$}
-    \includegraphics[width=0.5\textwidth]{Immagini/esempi/seno_overfit.png}
+
+\begin{table}
     \centering
-    \label{fig:seno_overfitting}
-\end{figure}
+    \caption{Fit della funzione $sin(2x) + sin(3x) + \varepsilon$. \\ Overfitting nella figura a destra in $(2,4)$.\label{tab:seno_fit}}
+        \begin{tabular}{ccc}
+             \includegraphics[width=0.45\linewidth]{Immagini/esempi/somma_seni.png}
+            & \includegraphics[width=0.45\linewidth]{Immagini/esempi/seno_overfit.png}\\[-4pt]
+        \end{tabular}%
+\end{table}
+
 \begin{remark}
     La curva che è in overfitting in figura \ref{fig:seno_overfitting} ha un \textbf{MSE} più basso rispetto alla curva che non è in 
     overfitting in figura \ref{fig:seno_fit}, infatti si ha un migliore adattamento ai dati, che però sono rumorosi, e ci si allontana dalla 
-    vera funzione generatrice $sin(2x) + sin(3x)$. I due MSE sono riportati in tabella \ref{tab:MSE}
+    vera funzione generatrice $sin(2x) + sin(3x)$. I due MSE sono riportati in tabella \ref{tab:MSE}.
 
     \begin{table}[h!]
         \centering
@@ -135,6 +137,7 @@ a raffinare, otteniamo un risultato peggiore. Eseguendo il listato \ref{seno_ove
          \label{tab:MSE}
         \end{table}
 \end{remark}
+
 \subsection{La funzione di Runge}
 Abbiamo scelto di approssiamare la funzione di Runge per vedere se si presenta il fenomeno di Runge.
 \begin{definition}[Fenomeno di Runge]
@@ -144,24 +147,19 @@ Abbiamo scelto di approssiamare la funzione di Runge per vedere se si presenta i
 Nel nostro caso abbiamo nodi equidistanti, ma grado basso. Non ci aspettiamo il verificarsi di tale fenomeno.
 
 Mostraimo adesso i plot delle approssimazioni di tale funzione con rifinitura a mano negli intervalli $(-0.25,0.25)$ e successivamente 
-in $(-0.1,0.1)$
-(Figura \ref{fig:runge_mano})e con rifinutura automatica basandosi su MSE per la scelta degli intervalli da rifinire 
-(Figura \ref{fig:runge_auto}).
-In tabella \ref{tab:runge} sono rappresentati gli MSE per entrmbe le versioni. Con il metodo manuale si ottiene un MSE minore 
+in $(-0.1,0.1)$ e con rifinutura automatica basandosi su MSE per la scelta degli intervalli da rifinire. I risultati sono mostrati nella 
+tabella \ref{tab:runge_fit}.
+In tabella \ref{tab:runge_mse} sono rappresentati gli MSE per entrambe le versioni. Con il metodo manuale si ottiene un MSE minore 
 e un maggior adattamento visivo alla vera curva.
-\begin{figure}[h!]
-    \caption{Approssimazione automatica}
-    \includegraphics[width=0.75\textwidth]{Immagini/esempi/runge_auto.png}
-    \centering
-    \label{fig:runge_auto}
-\end{figure}
-\begin{figure}[h!]
-    \caption{Approssimazione manuale}
-    \includegraphics[width=0.75\textwidth]{Immagini/esempi/runge_mano.png}
-    \centering
-    \label{fig:runge_mano}
-\end{figure}
 
+\begin{table}
+    \centering
+    \caption{Rifinitura automatica(sinistra). Rifinitura manuale(destra)\label{tab:runge_fit}}
+        \begin{tabular}{ccc}
+             \includegraphics[width=0.45\linewidth]{Immagini/esempi/runge_auto.png}
+            & \includegraphics[width=0.45\linewidth]{Immagini/esempi/runge_mano.png}\\[-4pt]
+        \end{tabular}%
+\end{table}
 
 \begin{table}[h!]
     \centering
@@ -172,15 +170,9 @@ e un maggior adattamento visivo alla vera curva.
      0.010646661450860125 & 0.00981932028930905 \\  [1ex] 
      \hline
      \end{tabular}
-     \label{tab:runge}
+     \label{tab:runge_mse}
      \caption{MSE per l'approssimazione della funzione di Runge}
     \end{table}
-
-
-
-
-
-
 
 
 \end{document}
