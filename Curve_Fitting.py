@@ -64,7 +64,6 @@ class Model:
         if range is None:
             if(isinstance(self.base, B_Spline)):
                 knot_id = np.argsort(self.sse)[-1]
-                #print(knot_id)
                 self.base.insert_knot(
                     self.curve[knot_id,0]
                 )
@@ -95,11 +94,13 @@ class Model:
             self = old_model
             return self
 
-    def plot(self)->None:
-        plt.plot(self.data[:,0],self.data[:,1] , "bo", label="data")
-        plt.plot(self.curve[:,0],self.curve[:,1],"r-",label="fit")
+    def plot(self, axes = None)->None:
+        if axes is None:
+            fig, axes = plt.subplots() 
+        axes.plot(self.data[:, 0], self.data[:, 1], "bo", label="data")
+        axes.plot(self.curve[:, 0], self.curve[:, 1], "r-", label="fit")
         #plt.plot(self.control_points[:,0],self.control_points[:,1],"x:g",label="control points")
-        plt.legend(loc="best")
+        axes.legend(loc="best")
         print("MSE:"+"{:e}".format(self.mse))
 
     def MSE(self)->np.float32:
@@ -112,41 +113,44 @@ class Model:
 
 
 def main():
+    def runge_function(x):
+        return 1 / (1 + 25 * x**2)
     
-    base  = B_Spline(
+    base_hb  = B_Spline(
         knots=np.linspace(-1,1,10+1),
         order=3
     )
 
-    hb_a = HB_Spline(base)
-    hb_b = HB_Spline(base)
-
-    
     np.random.seed(1304)
-
-    samples = np.shape(base.compute_base().get_collocation_matrix())[1]
-
-    def runge_function(x):
-        return 1 / (1 + 25 * x**2)
-    
+    samples = np.shape(base_hb.compute_base().get_collocation_matrix())[1]
+    #Addesso le B-Spline sono state calcolate e possiamo dichiarare le HB-Spline
+    hb_a = HB_Spline(base_hb)
+    hb_b = HB_Spline(base_hb)
+    #Generazione dati per la funzione di runge (Dimensione per le HB-Spline)
     x = np.linspace(-1, 1, samples)
     y_true = runge_function(x)
     y = y_true + np.random.normal(0, 0.1, len(x))
-    data = np.matrix([x, y]).T
+    data_hb = np.matrix([x, y]).T
+    
+    b = Model(
+    base=hb_b,
+    data=data_hb
+    )
+    b.fit().iterative_refine()
+    
+    a = Model(
+    base=hb_a,
+    data=data_hb
+    )
+    a.fit().refine((-0.25,0.25)).refine((-0.1,0.1))
 
-    # plt.plot(x,y , "bo", label="data")
-    # plt.plot(x,y_true,"y-",label = "Runge")
-    # plt.legend(loc="best")
-    # plt.show()
 
-
+    #Base B-Spline
     base  = B_Spline(
         knots= [-1,-1,-1,-0.75,-0.5,-0.25,0,0.25,0.5,0.75,1,1,1],
         order=3
     )
-
     samples = np.shape(base.compute_base().get_collocation_matrix())[1]
-
     x = np.linspace(-1, 1, samples)
     y_true = runge_function(x)
     y = y_true + np.random.normal(0, 0.1, len(x))
@@ -155,50 +159,23 @@ def main():
     c = Model(
         base=base,
         data=data
-    )
+    ).fit().iterative_refine()
 
-    c.fit()
-    c.plot()
-    plt.plot(x,y_true,"y-",label = "Runge")
+    fig, ax = plt.subplots(3, 1, figsize=(16,12))
+    a.plot(ax[0])
+    ax[0].plot(x, y_true, "y-", label="real")
+    ax[0].set_title("Raffinatura manuale (-0.25, 0.25), (-0.1, 0.1)"+" MSE:"+"{:e}".format(a.mse))
+
+    b.plot(ax[1])
+    ax[1].plot(x, y_true, "y-", label="real")
+    ax[1].set_title("Raffinatura automatica"+" MSE:"+"{:e}".format(b.mse))
+
+    c.plot(ax[2])
+    ax[2].plot(x, y_true, "y-", label="real")
+    ax[2].set_title("Raffinatura automatica B-Spline"+" MSE:"+"{:e}".format(c.mse))
+
+    plt.suptitle("Confronto tra metodi")
     plt.show()
-
-    c.iterative_refine()
-    c.plot()
-    plt.plot(x,y_true,"y-",label = "Runge")
-    plt.show()
-    print(c.base.knots)
-
-    # b = Model(
-    #     base=hb_b,
-    #     data=data
-    # )
-    # b.fit().iterative_refine()
-    # b.plot()
-    # plt.plot(x,y_true,"y-",label = "Runge")
-    # plt.show()
-
-    # a = Model(
-    #     base=hb_a,
-    #     data=data
-    # )
-    # a.fit()
-
-    # a.plot()
-    # plt.plot(x,y_true,"y-",label = "Runge")
-    # plt.show()
-
-    # a.refine((-0.25,0.25))
-    # a.plot()
-    # plt.plot(x,y_true,"y-",label = "Runge")
-    # plt.show()
-
-    # a.refine((-0.1,0.1))
-    # a.plot()
-    # plt.plot(x,y_true,"y-",label = "Runge")
-    # plt.show()
-
-
-
 
 
 if __name__ == "__main__":
