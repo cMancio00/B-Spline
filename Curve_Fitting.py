@@ -7,6 +7,7 @@ from HB_Spline import HB_Spline
 from Collocable_Interface import Collocable
 from matplotlib import pyplot as plt
 from numpy.random import choice
+from copy import deepcopy
 from time import time
 
 
@@ -85,13 +86,13 @@ class Model:
     def iterative_refine(self)->Model:
         try:
             while True:
-                old_model = self
+                old_model = deepcopy(self)
                 self.refine()
                 if(old_model.mse < self.mse):
-                    self = old_model
+                    self = deepcopy(old_model)
                     return self
         except np.linalg.LinAlgError:
-            self = old_model
+            self = deepcopy(old_model)
             return self
 
     def plot(self, axes = None)->None:
@@ -141,8 +142,7 @@ def main():
     a = Model(
     base=hb_a,
     data=data_hb
-    )
-    a.fit().refine((-0.25,0.25)).refine((-0.1,0.1))
+    ).fit().refine((-0.25,0.25)).refine((-0.1,0.1))
 
 
     #Base B-Spline
@@ -161,7 +161,9 @@ def main():
         data=data
     ).fit().iterative_refine()
 
+
     fig, ax = plt.subplots(3, 1, figsize=(16,12))
+
     a.plot(ax[0])
     ax[0].plot(x, y_true, "y-", label="real")
     ax[0].set_title("Raffinatura manuale (-0.25, 0.25), (-0.1, 0.1)"+" MSE:"+"{:e}".format(a.mse))

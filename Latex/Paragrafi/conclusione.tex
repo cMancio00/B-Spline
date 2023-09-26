@@ -4,12 +4,9 @@
 \section{Counclusione}
 Nella teoria dei modelli statistici non parametrici, le B-spline non vengono utilizzate per via del grande incremento di nodi e di basi 
 che si vanno a creare utilizzando una griglia Tensore-Prodotto. Hanno quindi ripiegato sulle P-spline. Le HB-spline risolvono in maniera 
-più efficiente lo stesso problema, tuttavia si perde la partizione dell'unità. Questa proprietà è importante anche per evitare overfitting 
-prematuri, quindi utilizzare le versioni troncate delle HB-spline, chiamate THB-spline, potrebbe risolvere i problemi di overfitting, 
-visti negli esempi. Altra cosa da rivedere è il criterio per la rifinitura automatica. Avendo scelto come \textit{funzione di loss} 
-MSE, ed essendo 
-esso una norma $\mathbf{L^2}$, ciò che minimizza tale norma è la media. Proponiamo quindi di usare i quattro punti con maggiore 
-contributo per MSE e usare come range di rifinitura il punto medio tra i primi 2 e il punto medio tra gli ultimi due. Le norme $\mathbf{L^0}$ 
-e $\mathbf{L^1}$, minimizzate rispettivamente da moda e mediana, non sono usate in quasi nessun campo applicativo. Viene utilizzata 
-in presenza di outliers la norma $\mathbf{L^1}$, ma richiede molti più dati per avere la stessa precisione della norma $\mathbf{L^2}$.
+più efficiente lo stesso problema, tuttavia si perde la partizione dell'unità. Questa proprietà è riottenuta utilizzando le versioni troncate delle HB-spline, 
+chiamate THB-spline. Altra cosa da rivedere è il criterio per la rifinitura automatica. Avendo scelto come \textit{funzione di loss} 
+MSE, le funzioni di rifinitura cercano i due punti che danno maggior incremento alla funzione di loss e raffinano nel range di tali punti. 
+Questo procedimento viene iterato fino a che MSE continua a migliorare. Questo può portare ad overfitting se non si introducono criteri d'arresto aggiuntivi.
+In aggiunta, si possono verificare grandi discostamenti dalla funzione generatrice, anche avendo un miglior adattamento ai dati.
 \end{document}
